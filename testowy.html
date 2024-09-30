@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Product Search</title>
+</head>
+<body class="bg-gray-100">
+
+<header class="bg-gray-200 p-4 text-center">
+    <h1 class="text-2xl font-bold">Sklep Internetowy</h1>
+</header>
+
+<main class="container mx-auto mt-8">
+    <section class="bg-white p-4 rounded-lg shadow-md mb-6">
+        <h2 class="text-xl font-bold">Wyszukiwanie Produktów</h2>
+        <div class="flex items-center mt-4">
+            <label class="mr-2">Wyszukaj:</label>
+            <input type="text" id="search-input" class="border p-2 rounded" placeholder="Wpisz nazwę produktu...">
+            <div class="flex flex-col ml-4">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="searchProducts()">Szukaj</button>
+                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="showAllProducts()">Pokaż wszystkie</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="product-list" class="py-40 flex flex-wrap justify-center gap-16">
+        <!-- Example product card -->
+        <div class="product bg-white border border-gray-300 rounded-lg p-4 shadow-md">
+            <img class="product-image w-full h-40 object-cover rounded-md" src="img/product1.jpg" alt="Product 1">
+            <div class="product-info mt-2">
+                <h2 class="text-lg font-bold">Produkt 1</h2>
+                <p class="text-gray-700">Opis produktu 1.</p>
+                <p class="font-bold">Cena: 100 PLN</p>
+            </div>
+        </div>
+        
+        <div class="product bg-white border border-gray-300 rounded-lg p-4 shadow-md">
+            <img class="product-image w-full h-40 object-cover rounded-md" src="img/product2.jpg" alt="Product 2">
+            <div class="product-info mt-2">
+                <h2 class="text-lg font-bold">Produkt 2</h2>
+                <p class="text-gray-700">Opis produktu 2.</p>
+                <p class="font-bold">Cena: 200 PLN</p>
+            </div>
+        </div>
+
+        <div class="product bg-white border border-gray-300 rounded-lg p-4 shadow-md">
+            <img class="product-image w-full h-40 object-cover rounded-md" src="img/product3.jpg" alt="Product 3">
+            <div class="product-info mt-2">
+                <h2 class="text-lg font-bold">Produkt 3</h2>
+                <p class="text-gray-700">Opis produktu 3.</p>
+                <p class="font-bold">Cena: 150 PLN</p>
+            </div>
+        </div>
+        
+        <div class="product bg-white border border-gray-300 rounded-lg p-4 shadow-md">
+            <img class="product-image w-full h-40 object-cover rounded-md" src="img/product4.jpg" alt="Product 4">
+            <div class="product-info mt-2">
+                <h2 class="text-lg font-bold">Produkt 4</h2>
+                <p class="text-gray-700">Opis produktu 4.</p>
+                <p class="font-bold">Cena: 250 PLN</p>
+            </div>
+        </div>
+
+        <!-- Add more product cards as needed -->
+    </section>
+</main>
+
+<footer class="text-center py-4 bg-gray-200">
+    <p>&copy; 2024 Biznes. Wszystkie prawa zastrzeżone.</p>
+</footer>
+
+<script>
+    // Sample product data (you can replace this with your actual data)
+    const products = [
+        {
+            name: 'Produkt 1',
+            description: 'Opis produktu 1.',
+            price: '100 PLN',
+            image: 'img/product1.jpg'
+        },
+        {
+            name: 'Produkt 2',
+            description: 'Opis produktu 2.',
+            price: '200 PLN',
+            image: 'img/product2.jpg'
+        },
+        {
+            name: 'Produkt 3',
+            description: 'Opis produktu 3.',
+            price: '150 PLN',
+            image: 'img/product3.jpg'
+        },
+        {
+            name: 'Produkt 4',
+            description: 'Opis produktu 4.',
+            price: '250 PLN',
+            image: 'img/product4.jpg'
+        }
+    ];
+
+    // Function to search products
+    function searchProducts() {
+        const searchInput = document.getElementById('search-input').value.toLowerCase();
+        const productElements = document.querySelectorAll('.product');
+
+        // Show all products initially
+        productElements.forEach(product => {
+            product.style.display = 'block'; // Reset visibility
+        });
+
+        // Hide products that do not match the search input
+        productElements.forEach(product => {
+            const productName = product.querySelector('h2').innerText.toLowerCase();
+            if (!productName.includes(searchInput)) {
+                product.style.display = 'none'; // Hide non-matching products
+            }
+        });
+    }
+
+    // Function to show all products
+    function showAllProducts() {
+        const productElements = document.querySelectorAll('.product');
+
+        // Show all products
+        productElements.forEach(product => {
+            product.style.display = 'block';
+        });
+
+        // Clear the search input
+        document.getElementById('search-input').value = '';
+    }
+</script>
+
+</body>
+</html>

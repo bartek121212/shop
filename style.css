@@ -1,0 +1,126 @@
+body{
+    background: rgb(255, 255, 255);
+}
+.container2{
+    background: black;
+    border: 2px solid white;
+    width: 1450px;
+    height: 500px;
+    background-size: 100%;
+    border-radius: 35px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+.pro{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 900px;
+    background: rgb(0, 162, 255);
+    transform: skew(1deg, 2deg);
+    padding: 50px;
+}
+#produkt{
+    background: black;
+    border: 2px solid white;
+    width: 250px;
+    height: 250px;
+}
+@media screen and (min-width: 368px) and (max-width: 800px){
+    .pro{
+        display: flex;
+        justify-content: center;
+        margin-left: 100px;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+    }
+}
+
+.product {
+    width: 250px;
+    height: 250px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    text-align: center;
+}
+
+.product img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+}
+
+ .product-info {
+    position: relative;
+    bottom: -20px;
+    left: 45%;
+    transform: translateX(-50%);
+    background: rgba(202, 202, 202, 0.8);
+    padding: 10px;
+    border-radius: 5px;
+    width: 90%;
+/*     opacity: 0; */
+}
+
+.product-info h2 {
+    margin: 0;
+    font-size: 1.2em;
+    text-align: center;
+/*     opacity: 0; */
+}
+
+.product-info p {
+    margin: 5px 0 0;
+    font-size: 0.9em;
+    text-align: center;
+/*     opacity: 0; */
+} 
+
+.buy-button {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background-color: #6193ff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.buy-button:hover{
+    background-color: #0fe04e;
+}
+.product:hover .buy-button {
+    opacity: 1;
+}
+
+.product:hover img {
+    opacity: 0.7;
+}
+ .product:hover .product-info p{
+    opacity: 1;
+}
+.product:hover .product-info h2{
+    opacity: 1;
+}
+.product:hover .product-info{
+    opacity: 1;
+} 
+#article{
+    background: white;
+}
+.art2{
+    background: rgb(230, 230, 230);
+/*     transform: skew(1deg, 2deg); */
+}

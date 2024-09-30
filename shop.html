@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="pl-PL" class="scroll-smooth">
+<head>
+    <title>Biznes</title>
+    <link rel="website icon" href="img/logo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        function filterProducts() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const products = document.querySelectorAll('.product');
+
+            let product10Visible = false; // Flaga do śledzenia widoczności produktu 10
+
+            products.forEach(product => {
+                const productName = product.querySelector('.product-info h2').innerText.toLowerCase();
+                if (productName.includes(searchInput) || (searchInput === 'produkt 10' && productName === 'produkt 10')) {
+                    product.style.display = ''; // Pokaż produkt
+                    if (productName === 'produkt 10') {
+                        product10Visible = true; // Zaznacz, że produkt 10 jest widoczny
+                    }
+                } else {
+                    product.style.display = 'none'; // Ukryj produkt
+                }
+            });
+
+            // Jeżeli nie wpisano "produkt 10", a produkt 10 jest nadal niewidoczny, ukryj go
+            const product10 = document.querySelector('.product-10');
+            if (searchInput !== 'produkt 10' && !product10Visible) {
+                product10.style.display = 'none';
+            }
+        }
+    </script>
+    <style>
+        .product{
+            width:auto;
+            height: 380px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        #img{
+            width: auto;
+            height: auto;
+            text-align: center;
+        }
+        .product-info{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .hidden {
+            display: none; /* Klasa ukrywająca produkt */
+        }
+    </style>
+</head>
+<body>
+<header id="home" class="text-black text-2xl">
+    <nav id="nav" class="relative flex flex-wrap items-center justify-between px-2 py-5">
+        <div class="container px-4 mx-auto flex flex-wrap items-center justify-center">
+            <div class="w-full relative flex justify-between lg:w-auto  px-4 lg:static lg:block lg:justify-start">
+                <div class="flex justify-center items-center flex-wrap gap-5">
+                    <img class="w-10" src="img/logo.png">
+                    <a class="text-lg max-md:mt-5 max-lg:mt-5 font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-black" href="dashboard.html">
+                        Biznes
+                    </a>
+                </div>
+                <button class="text-black cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none" type="button" onclick="toggleNavbar('example-collapse-navbar')">
+                    <svg class="rounded-full hover:bg-transparent cursor-pointer transition delay-150 duration-300 ease-in-out" width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <path d="M4 6H20M4 12H20M4 18H20" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </g>
+                    </svg>
+                </button>
+            </div>
+            <div class="lg:flex items-center hidden" id="example-collapse-navbar">
+                <ul class="flex flex-col lg:flex-row list-none lg:ml-auto">
+                    <li class="nav-item">
+                        <a class="px-3 py-2 flex items-center text-xl font-bold leading-snug text-black hover:text-blue-500 transition-all delay-150" href="index.html">
+                            <i class="fab fa-facebook-square text-lg leading-lg text-black opacity-75"></i><span class="ml-2">Strona Główna</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <div class="px-3 py-2 flex items-center justify-center text-black hover:text-blue-500 transition-all delay-150">
+                            <i class="fab fa-facebook-square text-lg leading-lg text-black opacity-75"></i>
+                            <p id="options-button" class="text-xl font-bold cursor-pointer">Sklep</p>
+                        </div>
+                        <div class="flex justify-center items-center delay-150 transition-all absolute">
+                            <div id="options-menu" class="left-0 max-sm:w-40 w-60 rounded-md shadow-lg bg-slate-900 text-black font-bold text-xl ring-1 ring-black ring-opacity-5 z-10 hidden delay-150 transition-all">
+                                <div class="py-4 px-4" role="menu" aria-orientation="vertical" aria-labelledby="options-button">
+                                    <a href="regulamin.html" class="delay-150 transition-all block px-4 py-2 text-lg text-gray-100 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Regulamin</a>
+                                    <div class="hover:bg-gray-100 delay-150 transition-all">
+                                        <a href="regulamincrime.html" class="delay-150 transition-all block px-4 py-2 text-lg text-gray-100 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Regulamin Crime</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="px-3 py-2 flex items-center text-xl font-bold leading-snug text-black hover:text-blue-500 transition-all delay-150" href="sklep.html">
+                            <i class="fab fa-pinterest text-lg leading-lg text-black opacity-75"></i><span class="ml-2">Dla fanów</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="px-3 py-2 flex items-center text-md ml-20 font-bold leading-snug text-black hover:text-blue-500 transition-all delay-150" href="">
+                            <svg width="34px" height="34px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="black">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path d="M3.5 4.5H5.05848C5.7542 4.5 6.10206 4.5 6.36395 4.68876C6.62584 4.87752 6.73584 5.20753 6.95585 5.86754L7.5 7.5" stroke="black" stroke-linecap="round"></path>
+                                    <path d="M17.5 17.5H8.05091C7.90471 17.5 7.83162 17.5 7.77616 17.4938C7.18857 17.428 6.78605 16.8695 6.90945 16.2913C6.92109 16.2367 6.94421 16.1674 6.99044 16.0287V16.0287C7.04177 15.8747 7.06743 15.7977 7.09579 15.7298C7.38607 15.0342 8.04277 14.5608 8.79448 14.5054C8.8679 14.5 8.94906 14.5 9.11137 14.5H14.5" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path d="M14.1787 14.5H11.1376C9.85836 14.5 9.21875 14.5 8.71781 14.1697C8.21687 13.8394 7.96492 13.2515 7.461 12.0757L7.29218 11.6818C6.48269 9.79294 6.07794 8.84853 6.52255 8.17426C6.96715 7.5 7.99464 7.5 10.0496 7.5H15.3305C17.6295 7.5 18.779 7.5 19.2126 8.24711C19.6462 8.99422 19.0758 9.99229 17.9352 11.9884L17.6517 12.4846C17.0897 13.4679 16.8088 13.9596 16.3432 14.2298C15.8776 14.5 15.3113 14.5 14.1787 14.5Z" stroke="black" stroke-linecap="round"></path>
+                                    <circle cx="17" cy="20" r="1" fill="black"></circle>
+                                    <circle cx="9" cy="20" r="1" fill="black"></circle>
+                                </g>
+                            </svg>
+                            <i class="fab fa-pinterest text-lg leading-lg text-black opacity-75"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<main>
+    <div class="container mx-auto">
+        <div class="my-8">
+            <h1 class="text-center text-4xl font-bold">Szukaj produktów:</h1>
+            <input type="text" id="search-input" class="border border-gray-300 rounded-lg p-2 w-full" placeholder="Wpisz nazwę produktu..." oninput="filterProducts()">
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div class="product">
+                <div class="product-info">
+                    <img id="img" src="img/logo.png">
+                    <h2 class="text-xl font-bold">Produkt 1</h2>
+                    <p class="text-gray-600">Opis produktu 1</p>
+                </div>
+            </div>
+            <div class="product">
+                <div class="product-info">
+                    <img id="img" src="img/logo.png">
+                    <h2 class="text-xl font-bold">Produkt 2</h2>
+                    <p class="text-gray-600">Opis produktu 2</p>
+                </div>
+            </div>
+            <div class="product">
+                <div class="product-info">
+                    <img id="img" src="img/logo.png">
+                    <h2 class="text-xl font-bold">Produkt 3</h2>
+                    <p class="text-gray-600">Opis produktu 3</p>
+                </div>
+            </div>
+            <div class="product">
+                <div class="product-info">
+                    <img id="img" src="img/logo.png">
+                    <h2 class="text-xl font-bold">Produkt 4</h2>
+                    <p class="text-gray-600">Opis produktu 4</p>
+                </div>
+            </div>
+            <div class="product">
+                <div class="product-info">
+                    <img id="img" src="img/logo.png">
+                    <h2 class="text-xl font-bold">Produkt 5</h2>
+                    <p class="text-gray-600">Opis produktu 5</p>
+                </div>
+            </div>
+            <div class="product">
+                <div class="product-info">
+                    <img id="img" src="img/logo.png">
+                    <h2 class="text-xl font-bold">Produkt 6</h2>
+                    <p class="text-gray-600">Opis produktu 6</p>
+                </div>
+            </div>
+            <div class="product">
+                <div class="product-info">
+                    <img id="img" src="img/logo.png">
+                    <h2 class="text-xl font-bold">Produkt 7</h2>
+                    <p class="text-gray-600">Opis produktu 7</p>
+                </div>
+            </div>
+            <div class="product">
+                <div id="img">
+                    <img src="img/8.png" alt="Produkt 8">
+                </div>
+                <div class="product-info">
+                    <h2 class="text-xl font-bold">Produkt 8</h2>
+                    <p class="text-lg">Opis produktu 8</p>
+                </div>
+            </div>
+            <div class="product product-10 hidden"> <!-- Produkt 10 ukryty domyślnie -->
+                <div id="img">
+                    <img src="img/10.png" alt="Produkt 10">
+                </div>
+                <div class="product-info">
+                    <h2 class="text-xl font-bold">Produkt 10</h2>
+                    <p class="text-lg">Opis produktu 10</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

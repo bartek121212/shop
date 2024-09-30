@@ -1,0 +1,15 @@
+[
+    {
+      "name": "Produkt 1",
+      "description": "Opis Produktu 1",
+      "price": 100,
+      "category": "Detailing"
+    },
+    {
+      "name": "Produkt 2",
+      "description": "Opis Produktu 2",
+      "price": 200,
+      "category": "Detailing"
+    }
+  ]
+  
