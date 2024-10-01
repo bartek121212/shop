@@ -14,14 +14,14 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            border: 2px solid #ccc; 
-            border-radius: 8px; 
-            margin: 10px; 
-            position: relative; 
-            transition: box-shadow 0.3s ease; /
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            margin: 10px;
+            position: relative;
+            transition: box-shadow 0.3s ease;
         }
         .product:hover {
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         .img {
             width: auto;
@@ -36,25 +36,25 @@
             flex-direction: column;
         }
         .buy-button {
-            display: block; 
-            margin-top: 10px; 
+            display: block;
+            margin-top: 10px;
             padding: 10px 20px;
-            background-color: green; 
-            color: white; 
+            background-color: green;
+            color: white;
             border: none;
-            border-radius: 5px; 
-            cursor: pointer; 
-            transition: background-color 0.3s ease; 
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
         .buy-button:hover {
-            background-color: darkgreen; 
+            background-color: darkgreen;
         }
         .price {
-            font-weight: bold; 
-            margin: 5px 0; 
+            font-weight: bold;
+            margin: 5px 0;
         }
         .modal {
-            display: none; 
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -88,13 +88,31 @@
             padding: 10px;
             border-radius: 8px;
         }
-        .modal-body{
+        .modal-body {
             font-weight: bold;
             font-size: 20px;
         }
-        .modal-footer{
+        .modal-footer {
             font-weight: bold;
             font-size: 20px;
+        }
+        .remove-button {
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s ease;
+            gap: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .remove-button:hover {
+            background-color: darkred;
         }
     </style>
 </head>
@@ -256,8 +274,8 @@
             <div class="modal-header">Koszyk</div>
             <div id="cart-items"></div>
             <div id="total-price" class="modal-footer"></div>
-            <button class="buy-button" onclick="resetCart()">Resetuj koszyk</button>
-            <button class="buy-button" onclick="resetCart()">Zapłać</button>
+         <!--    <button class="buy-button" onclick="resetCart()">Resetuj koszyk</button> -->
+            <button class="buy-button" onclick="pay()">Zapłać</button>
         </div>
     </div>
 
@@ -266,6 +284,7 @@
         let cart = []; 
         let currentProduct = { name: '', price: 0 }; 
     
+      
         function showModal(productName, productPrice) {
             currentProduct.name = productName;
             currentProduct.price = productPrice;
@@ -274,25 +293,36 @@
             document.getElementById('modal').style.display = 'flex';
         }
     
+ 
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
         }
     
+
         function addToCart() {
-            // Create a new object for the current product
             const newProduct = { name: currentProduct.name, price: currentProduct.price };
-            cart.push(newProduct); 
+            cart.push(newProduct);
             closeModal();
+            updateCart(); 
         }
     
+  
         function updateCart() {
             const cartItemsContainer = document.getElementById('cart-items');
-            cartItemsContainer.innerHTML = ''; 
+            cartItemsContainer.innerHTML = '';
             let totalPrice = 0;
     
-            cart.forEach((item) => {
+            cart.forEach((item, index) => {
                 const itemElement = document.createElement('div');
                 itemElement.textContent = `${item.name} - ${item.price} PLN`;
+                
+        
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Usuń';
+                removeButton.classList.add('remove-button');
+                removeButton.onclick = () => removeItemFromCart(index); 
+                itemElement.appendChild(removeButton);
+    
                 cartItemsContainer.appendChild(itemElement);
                 totalPrice += item.price;
             });
@@ -300,14 +330,23 @@
             document.getElementById('total-price').textContent = `Łączna cena: ${totalPrice} PLN`;
         }
     
+
         function showCartModal() {
             updateCart();
             document.getElementById('cart-modal').style.display = 'flex';
         }
     
+
         function closeCartModal() {
             document.getElementById('cart-modal').style.display = 'none';
         }
+    
+
+        function removeItemFromCart(index) {
+            cart.splice(index, 1); 
+            updateCart(); 
+        }
+    
     
         function resetCart() {
             cart = []; 
@@ -315,10 +354,16 @@
             closeCartModal(); 
         }
     
+      
+        function pay() {
+            alert('Dziękujemy za zakup! Płatność zakończona pomyślnie.');
+            resetCart(); 
+        }
+    
+ 
         function filterProducts() {
             const searchInput = document.getElementById('searchInput').value.toLowerCase();
             const categorySelect = document.getElementById('categorySelect').value;
-    
             const products = document.querySelectorAll('.product');
     
             products.forEach(product => {
@@ -336,7 +381,8 @@
             });
         }
     
-        function toggleNavbar(collapseID){
+
+        function toggleNavbar(collapseID) {
             document.getElementById(collapseID).classList.toggle("hidden");
             document.getElementById(collapseID).classList.toggle("flex");
         }
