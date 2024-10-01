@@ -1,38 +1,11 @@
 <!doctype html>
-<html lang="pl-PL" class="scroll-smooth">
+<html lang="pl-PL">
 <head>
     <title>Biznes</title>
     <link rel="website icon" href="img/logo.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
-    <script>
-        // Funkcja filtrująca produkty
-        function filterProducts() {
-            const searchInput = document.getElementById('search-input').value.toLowerCase(); // Pobierz wartość z inputa
-            const products = document.querySelectorAll('.product'); // Pobierz wszystkie produkty
-
-            let anyVisible = false; // Flaga do sprawdzenia, czy któryś produkt jest widoczny
-
-            products.forEach(product => {
-                const productName = product.querySelector('.product-info h2').innerText.toLowerCase(); // Nazwa produktu
-                // Sprawdzaj, czy wprowadzone hasło pasuje do nazwy produktu
-                if (productName.includes(searchInput)) {
-                    product.style.display = 'flex'; // Pokaż produkt
-                    anyVisible = true; // Ustaw flagę na true, jeśli produkt jest widoczny
-                } else {
-                    product.style.display = 'none'; // Ukryj produkt
-                }
-            });
-
-            // Jeśli żaden produkt nie jest widoczny, możesz wyświetlić komunikat (opcjonalnie)
-            if (!anyVisible) {
-                // Możesz dodać logikę wyświetlającą komunikat, gdy brak produktów
-                console.log("Brak produktów spełniających kryteria.");
-            }
-        }
-    </script>
     <style>
         .product {
             width: auto;
@@ -41,10 +14,17 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            display: none; /* Domyślnie ukryj wszystkie produkty */
+            border: 2px solid #ccc; 
+            border-radius: 8px; 
+            margin: 10px; 
+            position: relative; 
+            transition: box-shadow 0.3s ease; /
         }
-        .img { /* Zmieniono id na klasę */
-            width:auto;
+        .product:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+        }
+        .img {
+            width: auto;
             height: auto;
             text-align: center;
             padding: 10px;
@@ -55,128 +35,302 @@
             align-items: center;
             flex-direction: column;
         }
+        .buy-button {
+            display: block; 
+            margin-top: 10px; 
+            padding: 10px 20px;
+            background-color: green; 
+            color: white; 
+            border: none;
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease; 
+        }
+        .buy-button:hover {
+            background-color: darkgreen; 
+        }
+        .price {
+            font-weight: bold; 
+            margin: 5px 0; 
+        }
+        .modal {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: left;
+        }
+        .modal-header {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .close {
+            cursor: pointer;
+            color: red;
+            font-size: 1.2em;
+            float: right;
+        }
+        .cart {
+            margin-top: 20px;
+            border: 2px solid #ccc;
+            padding: 10px;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
-<header id="home" class="text-black text-2xl">
-    <nav id="nav" class="relative flex flex-wrap items-center justify-between px-2 py-5">
-        <div class="container px-4 mx-auto flex flex-wrap items-center justify-center">
-            <div class="w-full relative flex justify-between lg:w-auto  px-4 lg:static lg:block lg:justify-start">
-                <div class="flex justify-center items-center flex-wrap gap-5">
-                    <img class="w-10" src="img/logo.png">
-                    <a class="text-lg max-md:mt-5 max-lg:mt-5 font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-black" href="dashboard.html">
-                        Biznes
-                    </a>
-                </div>
-                <button class="text-black cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none" type="button" onclick="toggleNavbar('example-collapse-navbar')">
-                    <svg class="rounded-full hover:bg-transparent cursor-pointer transition delay-150 duration-300 ease-in-out" width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                        <g id="SVGRepo_iconCarrier">
-                            <path d="M4 6H20M4 12H20M4 18H20" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        </g>
-                    </svg>
-                </button>
-            </div>
-            <div class="lg:flex items-center hidden" id="example-collapse-navbar">
-                <ul class="flex flex-col lg:flex-row list-none lg:ml-auto">
-                    <li class="nav-item">
-                        <a class="px-3 py-2 flex items-center text-xl font-bold leading-snug text-black hover:text-blue-500 transition-all delay-150" href="index.html">
-                            <i class="fab fa-facebook-square text-lg leading-lg text-black opacity-75"></i><span class="ml-2">Strona Główna</span>
+    <header id="home" class="text-black text-2xl">
+        <nav id="nav" class="relative flex flex-wrap items-center justify-between px-2 py-5">
+            <div class="container px-4 mx-auto flex flex-wrap items-center justify-center">
+                <div class="w-full relative flex justify-between lg:w-auto px-4 lg:static lg:block lg:justify-start">
+                    <div class="flex justify-center items-center flex-wrap gap-5">
+                        <img class="w-10" src="img/logo.png">
+                        <a class="text-lg max-md:mt-5 max-lg:mt-5 font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-black" href="dashboard.html">
+                            Biznes
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <div class="px-3 py-2 flex items-center justify-center text-black hover:text-blue-500 transition-all delay-150">
-                            <i class="fab fa-facebook-square text-lg leading-lg text-black opacity-75"></i>
-                            <p id="options-button" class="text-xl font-bold cursor-pointer">Sklep</p>
-                        </div>
-                        <div class="flex justify-center items-center delay-150 transition-all absolute">
-                            <div id="options-menu" class="left-0 max-sm:w-40 w-60 rounded-md shadow-lg bg-slate-900 text-black font-bold text-xl ring-1 ring-black ring-opacity-5 z-10 hidden delay-150 transition-all">
-                                <div class="py-4 px-4" role="menu" aria-orientation="vertical" aria-labelledby="options-button">
-                                    <a href="regulamin.html" class="delay-150 transition-all block px-4 py-2 text-lg text-gray-100 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Regulamin</a>
-                                    <div class="hover:bg-gray-100 delay-150 transition-all">
-                                        <a href="regulamincrime.html" class="delay-150 transition-all block px-4 py-2 text-lg text-gray-100 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Regulamin Crime</a>
+                    </div>
+                    <button class="text-black cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none" type="button" onclick="toggleNavbar('example-collapse-navbar')">
+                        <svg class="rounded-full hover:bg-transparent cursor-pointer transition delay-150 duration-300 ease-in-out" width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 6H20M4 12H20M4 18H20" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                    </button>
+                </div>
+                <div class="lg:flex items-center hidden" id="example-collapse-navbar">
+                    <ul class="flex flex-col lg:flex-row list-none lg:ml-auto">
+                        <li class="nav-item">
+                            <a class="px-3 py-2 flex items-center text-xl font-bold leading-snug text-black hover:text-blue-500 transition-all delay-150" href="index.html">
+                                <i class="fab fa-facebook-square text-lg leading-lg text-black opacity-75"></i><span class="ml-2">Strona Główna</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <div class="px-3 py-2 flex items-center justify-center text-black hover:text-blue-500 transition-all delay-150">
+                                <a href="shop.html"><i class="fab fa-facebook-square text-lg leading-lg text-black opacity-75"></i><p id="options-button" class="text-xl font-bold cursor-pointer">Sklep</p></a>
+                            </div>
+                            <div class="flex justify-center items-center delay-150 transition-all absolute">
+                                <div id="options-menu" class="left-0 max-sm:w-40 w-60 rounded-md shadow-lg bg-slate-900 text-black font-bold text-xl ring-1 ring-black ring-opacity-5 z-10 hidden delay-150 transition-all">
+                                    <div class="py-4 px-4" role="menu" aria-orientation="vertical" aria-labelledby="options-button">
+                                        <a href="regulamin.html" class="delay-150 transition-all block px-4 py-2 text-lg text-gray-100 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Regulamin</a>
+                                        <div class="hover:bg-gray-100 delay-150 transition-all">
+                                            <a href="regulamincrime.html" class="delay-150 transition-all block px-4 py-2 text-lg text-gray-100 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Regulamin Crime</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="px-3 py-2 flex items-center text-xl font-bold leading-snug text-black hover:text-blue-500 transition-all delay-150" href="sklep.html">
-                            <i class="fab fa-pinterest text-lg leading-lg text-black opacity-75"></i><span class="ml-2">Dla fanów</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="px-3 py-2 flex items-center text-md ml-20 font-bold leading-snug text-black hover:text-blue-500 transition-all delay-150" href="">
-                            <svg width="34px" height="34px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="black">
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <path d="M3.5 4.5H5.05848C5.7542 4.5 6.10206 4.5 6.36395 4.68876C6.62584 4.87752 6.73584 5.20753 6.95585 5.86754L7.5 7.5" stroke="black" stroke-linecap="round"></path>
-                                    <path d="M17.5 17.5H8.05091C7.90471 17.5 7.83162 17.5 7.77616 17.4938C7.18857 17.428 6.78605 16.8695 6.90945 16.2913C6.92109 16.2367 6.94421 16.1674 6.99044 16.0287V16.0287C7.04177 15.8747 7.06743 15.7977 7.09579 15.7298C7.38607 15.0342 8.04277 14.5608 8.79448 14.5054C8.8679 14.5 8.94906 14.5 9.11137 14.5H14.5" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path d="M14.1787 14.5H11.1376C9.85836 14.5 9.21875 14.5 8.71781 14.1697C8.21687 13.8395 7.76741 13.2998 8.11869 12.5073C8.40773 11.8167 8.94311 11.5573 9.48593 11.5749C9.81309 11.5853 10.0057 11.7136 10.1744 11.888C10.3245 12.0483 10.5378 12.2087 10.8266 12.5298C11.1606 12.8786 11.6828 13.0309 12.1673 12.9759C12.7308 12.9282 13.2023 12.3588 13.2066 11.5C13.2097 10.9233 12.9192 10.4987 12.5217 10.1693C12.5068 10.1542 12.4776 10.1433 12.4483 10.1373C12.4118 10.1313 12.3691 10.1261 12.3048 10.1241C12.0852 10.1177 11.7479 10.0889 11.2469 10.1556C10.8891 10.2036 10.4465 10.3148 10.1717 10.5798C9.88583 10.8691 10.1449 11.0178 10.6134 11.0219C11.281 11.0277 11.6896 10.5333 11.8285 10.1714C11.9293 9.91196 12.1359 9.68136 12.4079 9.49542C12.8466 9.17414 13.4177 9.0466 13.8887 9.0466C14.2438 9.0466 14.5485 9.10223 14.7923 9.1914C15.0601 9.29712 15.2193 9.37439 15.3484 9.45477C15.6157 9.65553 15.7408 9.87183 15.9126 10.0515C16.0437 10.1778 16.1576 10.3501 16.3016 10.5856C16.4039 10.7853 16.474 10.9448 16.4699 11.0698C16.4699 11.0959 16.4711 11.1338 16.4955 11.2071C16.5232 11.2933 16.6738 11.3702 16.8185 11.4235C17.4666 11.6877 18.0748 11.9084 18.3659 12.2407C19.0253 13.1328 18.9087 14.3287 18.4288 15.5604C18.1265 16.3362 17.5632 16.8452 17.1357 17.4257C16.5763 18.1898 15.8277 18.5 15.1338 18.5H14.8311" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path d="M21.999 10.5C22.3573 10.42 22.5528 10.0821 22.5782 9.77645C22.6476 8.86095 22.2577 8.25472 21.899 8.3638C21.6282 8.47535 21.2373 8.5 20.999 8.5C20.7636 8.5 20.4614 8.4935 20.2034 8.42309C20.0929 8.39599 19.9784 8.3638 19.876 8.32887C19.6296 8.22843 19.2946 8.08662 18.9421 8.30725C18.7308 8.44208 18.5143 8.71123 18.334 9.03474C18.2678 9.24323 18.1589 9.54808 18 9.78632C17.9168 9.96735 17.8747 10.1564 17.853 10.3548C17.7329 10.3504 17.5816 10.336 17.5057 10.5C17.2928 11.4908 17.5749 12.636 17.8552 13.4303C18.3907 14.585 18.8433 15.6723 19.2853 16.5143C19.5773 17.0778 19.7862 17.4676 19.9705 17.6616C20.1549 17.8554 20.3541 18.0013 20.5 18.5" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path d="M21.999 10.5C22.3573 10.42 22.5528 10.0821 22.5782 9.77645C22.6476 8.86095 22.2577 8.25472 21.899 8.3638C21.6282 8.47535 21.2373 8.5 20.999 8.5C20.7636 8.5 20.4614 8.4935 20.2034 8.42309C20.0929 8.39599 19.9784 8.3638 19.876 8.32887C19.6296 8.22843 19.2946 8.08662 18.9421 8.30725C18.7308 8.44208 18.5143 8.71123 18.334 9.03474C18.2678 9.24323 18.1589 9.54808 18 9.78632C17.9168 9.96735 17.8747 10.1564 17.853 10.3548C17.7329 10.3504 17.5816 10.336 17.5057 10.5C17.2928 11.4908 17.5749 12.636 17.8552 13.4303C18.3907 14.585 18.8433 15.6723 19.2853 16.5143C19.5773 17.0778 19.7862 17.4676 19.9705 17.6616C20.1549 17.8554 20.3541 18.0013 20.5 18.5" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </g>
-                            </svg>
-                            <span class="ml-2">Zamów</span>
-                        </a>
-                    </li>
-                </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="px-3 py-2 flex items-center text-xl font-bold leading-snug text-black hover:text-blue-500 transition-all delay-150" href="sklep.html">
+                                <i class="fab fa-pinterest text-lg leading-lg text-black opacity-75"></i><span class="ml-2">Dla fanów</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="px-3 py-2 flex items-center text-md ml-20 font-bold leading-snug text-black hover:text-blue-500 transition-all delay-150"  onclick="showCartModal()">
+                                <svg width="34px" height="34px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="black"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3.5 4.5H5.05848C5.7542 4.5 6.10206 4.5 6.36395 4.68876C6.62584 4.87752 6.73584 5.20753 6.95585 5.86754L7.5 7.5" stroke="black" stroke-linecap="round"></path> <path d="M17.5 17.5H8.5C7.39543 17.5 6.5 16.6046 6.5 15.5C6.5 14.3954 7.39543 13.5 8.5 13.5H19C19.5523 13.5 20 14.0477 20 14.5V19C20 20.1046 19.1046 21 18 21H6.5" stroke="black" stroke-linecap="round"></path> <path d="M3.5 4.5L5.5 7H19C19.6639 7 20.3048 7.30561 20.7418 7.86803C21.1789 8.43044 21.5 9.07987 21.5 9.5C21.5 10.053 21.0529 10.5 20.5 10.5H7.5" stroke="black" stroke-linecap="round"></path> <path d="M17.5 18H17.5C17.5 18 17.5528 17.5 17 17.5C16.4472 17.5 16.5 18 16.5 18H17.5Z" stroke="black" stroke-linecap="round"></path> <path d="M8.5 18H8.5C8.5 18 8.55277 17.5 8 17.5C7.44723 17.5 7.5 18 7.5 18H8.5Z" stroke="black" stroke-linecap="round"></path> <path d="M5.5 21H6C7.10457 21 8 20.1046 8 19V18H6.5" stroke="black" stroke-linecap="round"></path> <path d="M21 3.5L20.1538 4.5H4.5" stroke="black" stroke-linecap="round"></path> </g></svg><span class="ml-2">Zamów</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
-</header>
+        </nav>
+    </header>
 
-<main class="py-20">
-    <div class="flex justify-center items-center mb-10">
-        <input type="text" id="search-input" oninput="filterProducts()" placeholder="Szukaj produktów" class="p-3 rounded-md border-2 border-gray-300" />
+    <main class="py-20 px-4">
+        <div class="container mx-auto">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold">Znajdź produkt</h2>
+                <input type="text" id="searchInput" placeholder="Wpisz nazwę produktu..." class="border border-gray-400 p-2 rounded w-full" oninput="filterProducts()">
+                <select id="categorySelect" class="border border-gray-400 p-2 rounded w-full mt-2" onchange="filterProducts()">
+                    <option value="">Wszystkie kategorie</option>
+                    <option value="elektronika">Elektronika</option>
+                    <option value="odzież">Odzież</option>
+                    <option value="meble">Meble</option>
+                </select>
+            </div>
+            <div id="productList" class="flex flex-wrap justify-center">
+                <div class="product" data-category="elektronika">
+                    <img src="img/logo.png" class="img" alt="Produkt 1">
+                    <div class="product-info">
+                        <h3 class="font-bold">Laptop XYZ</h3>
+                        <p class="price">Cena: 2500 PLN</p>
+                        <button class="buy-button" onclick="showModal('Laptop XYZ', 2500)">Kup teraz</button>
+                    </div>
+                </div>
+                <div class="product" data-category="elektronika">
+                    <img src="img/logo.png" class="img" alt="Produkt 1">
+                    <div class="product-info">
+                        <h3 class="font-bold">Konsola do gier</h3>
+                        <p class="price">Cena: 2500 PLN</p>
+                        <button class="buy-button" onclick="showModal('Laptop XYZ', 2500)">Kup teraz</button>
+                    </div>
+                </div>
+                <div class="product" data-category="elektronika">
+                    <img src="img/logo.png" class="img" alt="Produkt 2">
+                    <div class="product-info">
+                        <h3 class="font-bold">Smartfon ABC</h3>
+                        <p class="price">Cena: 1500 PLN</p>
+                        <button class="buy-button" onclick="showModal('Smartfon ABC', 1500)">Kup teraz</button>
+                    </div>
+                </div>
+                <div class="product" data-category="odzież">
+                    <img src="img/logo.png" class="img" alt="Produkt 3">
+                    <div class="product-info">
+                        <h3 class="font-bold">Koszula Męska</h3>
+                        <p class="price">Cena: 100 PLN</p>
+                        <button class="buy-button" onclick="showModal('Koszula Męska', 100)">Kup teraz</button>
+                    </div>
+                </div>
+                <div class="product" data-category="odzież">
+                    <img src="img/logo.png" class="img" alt="Produkt 4">
+                    <div class="product-info">
+                        <h3 class="font-bold">Sukienka Damska</h3>
+                        <p class="price">Cena: 200 PLN</p>
+                        <button class="buy-button" onclick="showModal('Sukienka Damska', 200)">Kup teraz</button>
+                    </div>
+                </div>
+                <div class="product" data-category="meble">
+                    <img src="img/logo.png" class="img" alt="Produkt 5">
+                    <div class="product-info">
+                        <h3 class="font-bold">Krzesło Nowoczesne</h3>
+                        <p class="price">Cena: 300 PLN</p>
+                        <button class="buy-button" onclick="showModal('Krzesło Nowoczesne', 300)">Kup teraz</button>
+                    </div>
+                </div>
+                <div class="product" data-category="meble">
+                    <img src="img/logo.png" class="img" alt="Produkt 6">
+                    <div class="product-info">
+                        <h3 class="font-bold">Stół Drewniany</h3>
+                        <p class="price">Cena: 800 PLN</p>
+                        <button class="buy-button" onclick="showModal('Stół Drewniany', 800)">Kup teraz</button>
+                    </div>
+                </div>
+                <div class="product" data-category="meble">
+                    <img src="img/logo.png" class="img" alt="Produkt 6">
+                    <div class="product-info">
+                        <h3 class="font-bold">Szafa Drewniana</h3>
+                        <p class="price">Cena: 800 PLN</p>
+                        <button class="buy-button" onclick="showModal('Stół Drewniany', 800)">Kup teraz</button>
+                    </div>
+                </div>
+                <div class="product" data-category="meble">
+                    <img src="img/logo.png" class="img" alt="Produkt 6">
+                    <div class="product-info">
+                        <h3 class="font-bold">Biurko Drewniane</h3>
+                        <p class="price">Cena: 800 PLN</p>
+                        <button class="buy-button" onclick="showModal('Stół Drewniany', 800)">Kup teraz</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 class="modal-header" id="modalTitle">Nazwa produktu</h2>
+            <p class="modal-body" id="modalPrice">Cena: 0 PLN</p>
+            <button class="buy-button" onclick="addToCart()">Dodaj do koszyka</button>
+        </div>
     </div>
-    <div class="flex flex-wrap justify-center">
-        <div class="product product-1">
-            <div class="img">
-                <img class="h-64" src="img/logo.png" alt="produkt 1">
-            </div>
-            <div class="product-info">
-                <h2 class="font-bold">Produkt 1</h2>
-                <p class="text-gray-600">Opis produktu 1</p>
-            </div>
-        </div>
-        <div class="product product-2">
-            <div class="img">
-                <img class="h-64" src="img/logo.png" alt="produkt 2">
-            </div>
-            <div class="product-info">
-                <h2 class="font-bold">Produkt 2</h2>
-                <p class="text-gray-600">Opis produktu 2</p>
-            </div>
-        </div>
-        <div class="product product-3">
-            <div class="img">
-                <img class="h-64" src="img/logo.png" alt="produkt 3">
-            </div>
-            <div class="product-info">
-                <h2 class="font-bold">Produkt 3</h2>
-                <p class="text-gray-600">Opis produktu 3</p>
-            </div>
-        </div>
-        <div class="product product-4">
-            <div class="img">
-                <img class="h-64" src="img/logo.png" alt="produkt 4">
-            </div>
-            <div class="product-info">
-                <h2 class="font-bold">Produkt 4</h2>
-                <p class="text-gray-600">Opis produktu 4</p>
-            </div>
+    
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCartModal()">&times;</span>
+            <div class="modal-header">Koszyk</div>
+            <div id="cart-items"></div>
+            <div id="total-price" class="modal-footer"></div>
+            <button class="buy-button" onclick="resetCart()">Resetuj koszyk</button>
+            <button class="buy-button" onclick="resetCart()">Zapłać</button>
         </div>
     </div>
-</main>
-</article>
+
+   
 <script>
-    function toggleNavbar(collapseID){
-      document.getElementById(collapseID).classList.toggle("hidden");
-      document.getElementById(collapseID).classList.toggle("flex");
+    let cart = []; 
+    let currentProduct = { name: '', price: 0 }; 
+
+    function showModal(productName, productPrice) {
+        currentProduct.name = productName;
+        currentProduct.price = productPrice;
+        document.getElementById('modalTitle').textContent = productName;
+        document.getElementById('modalPrice').textContent = `Cena: ${productPrice} PLN`;
+        document.getElementById('modal').style.display = 'flex';
     }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    function addToCart() {
+        cart.push(currentProduct); 
+ /*        alert('Produkt dodany do koszyka!'); */
+        closeModal();
+    }
+
+    function updateCart() {
+        const cartItemsContainer = document.getElementById('cart-items');
+        cartItemsContainer.innerHTML = ''; 
+        let totalPrice = 0;
+
+        cart.forEach((item, index) => {
+            const itemElement = document.createElement('div');
+            itemElement.textContent = `${item.name} - ${item.price} PLN`;
+            cartItemsContainer.appendChild(itemElement);
+            totalPrice += item.price;
+        });
+
+        document.getElementById('total-price').textContent = `Łączna cena: ${totalPrice} PLN`;
+    }
+
+    function showCartModal() {
+        updateCart();
+        document.getElementById('cart-modal').style.display = 'flex';
+    }
+
+    function closeCartModal() {
+        document.getElementById('cart-modal').style.display = 'none';
+    }
+
+    function resetCart() {
+        cart = []; 
+        updateCart(); 
+/*         alert('Koszyk został zresetowany.'); */
+        closeCartModal(); 
+    }
+
+    function filterProducts() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const categorySelect = document.getElementById('categorySelect').value;
+
+        const products = document.querySelectorAll('.product');
+
+        products.forEach(product => {
+            const productName = product.querySelector('h3').textContent.toLowerCase();
+            const productCategory = product.dataset.category;
+
+            const matchesSearch = productName.includes(searchInput);
+            const matchesCategory = categorySelect === '' || productCategory === categorySelect;
+
+            if (matchesSearch && matchesCategory) {
+                product.style.display = 'block';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+    }
+    function toggleNavbar(collapseID){
+          document.getElementById(collapseID).classList.toggle("hidden");
+          document.getElementById(collapseID).classList.toggle("flex");
+        }
 </script>
 </body>
 </html>
