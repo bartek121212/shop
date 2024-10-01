@@ -281,111 +281,106 @@
 
    
     <script>
-        let cart = []; 
-        let currentProduct = { name: '', price: 0 }; 
+        let cart = []; // Koszyk przechowujący produkty
+    let currentProduct = { name: '', price: 0, quantity: 1 }; // Obiekt przechowujący aktualnie wybrany produkt wraz z ilością
     
-      
-        function showModal(productName, productPrice) {
-            currentProduct.name = productName;
-            currentProduct.price = productPrice;
-            document.getElementById('modalTitle').textContent = productName;
-            document.getElementById('modalPrice').textContent = `Cena: ${productPrice} PLN`;
-            document.getElementById('modal').style.display = 'flex';
-        }
-    
- 
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-        }
-    
+    function showModal(productName, productPrice) {
+        currentProduct.name = productName;
+        currentProduct.price = productPrice;
+        currentProduct.quantity = 1; // Ustawiamy ilość na 1
+        document.getElementById('modalTitle').textContent = productName;
+        document.getElementById('modalPrice').textContent = `Cena: ${productPrice} PLN`;
+        document.getElementById('modal').style.display = 'flex';
+    }
 
-        function addToCart() {
-            const newProduct = { name: currentProduct.name, price: currentProduct.price };
-            cart.push(newProduct);
-            closeModal();
-            updateCart(); 
-        }
-    
-  
-        function updateCart() {
-            const cartItemsContainer = document.getElementById('cart-items');
-            cartItemsContainer.innerHTML = '';
-            let totalPrice = 0;
-    
-            cart.forEach((item, index) => {
-                const itemElement = document.createElement('div');
-                itemElement.textContent = `${item.name} - ${item.price} PLN`;
-                
-        
-                const removeButton = document.createElement('button');
-                removeButton.textContent = 'Usuń';
-                removeButton.classList.add('remove-button');
-                removeButton.onclick = () => removeItemFromCart(index); 
-                itemElement.appendChild(removeButton);
-    
-                cartItemsContainer.appendChild(itemElement);
-                totalPrice += item.price;
-            });
-    
-            document.getElementById('total-price').textContent = `Łączna cena: ${totalPrice} PLN`;
-        }
-    
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
 
-        function showCartModal() {
-            updateCart();
-            document.getElementById('cart-modal').style.display = 'flex';
+    function addToCart() {
+        // Sprawdź, czy produkt już istnieje w koszyku
+        const existingProduct = cart.find(item => item.name === currentProduct.name);
+        if (existingProduct) {
+            // Jeśli produkt istnieje, zwiększ jego ilość
+            existingProduct.quantity += currentProduct.quantity;
+        } else {
+            // Jeśli produkt nie istnieje, dodaj nowy obiekt do koszyka
+            cart.push({ ...currentProduct }); // Kopiujemy aktualny produkt do koszyka
         }
-    
+        closeModal();
+    }
 
-        function closeCartModal() {
-            document.getElementById('cart-modal').style.display = 'none';
-        }
-    
+    function updateCart() {
+        const cartItemsContainer = document.getElementById('cart-items');
+        cartItemsContainer.innerHTML = ''; 
+        let totalPrice = 0;
 
-        function removeItemFromCart(index) {
-            cart.splice(index, 1); 
-            updateCart(); 
-        }
-    
-    
-        function resetCart() {
-            cart = []; 
-            updateCart(); 
-            closeCartModal(); 
-        }
-    
-      
-        function pay() {
-            alert('Dziękujemy za zakup! Płatność zakończona pomyślnie.');
-            resetCart(); 
-        }
-    
- 
-        function filterProducts() {
-            const searchInput = document.getElementById('searchInput').value.toLowerCase();
-            const categorySelect = document.getElementById('categorySelect').value;
-            const products = document.querySelectorAll('.product');
-    
-            products.forEach(product => {
-                const productName = product.querySelector('h3').textContent.toLowerCase();
-                const productCategory = product.dataset.category;
-    
-                const matchesSearch = productName.includes(searchInput);
-                const matchesCategory = categorySelect === '' || productCategory === categorySelect;
-    
-                if (matchesSearch && matchesCategory) {
-                    product.style.display = 'block';
-                } else {
-                    product.style.display = 'none';
-                }
-            });
-        }
-    
+        // Iterujemy przez wszystkie produkty w koszyku
+        cart.forEach((item, index) => {
+            const itemElement = document.createElement('div');
+            itemElement.innerHTML = `
+                ${item.name} - ${item.price} PLN (x${item.quantity})
+                <button onclick="removeFromCart(${index})" class="remove-button">Usuń</button>
+            `;
+            itemElement.classList.add('cart-item'); // Dodaj klasę dla stylizacji elementów koszyka
+            cartItemsContainer.appendChild(itemElement);
+            totalPrice += item.price * item.quantity; // Sumujemy cenę wszystkich produktów
+        });
 
-        function toggleNavbar(collapseID) {
-            document.getElementById(collapseID).classList.toggle("hidden");
-            document.getElementById(collapseID).classList.toggle("flex");
+        document.getElementById('total-price').textContent = `Łączna cena: ${totalPrice} PLN`;
+    }
+
+    function showCartModal() {
+        updateCart();
+        document.getElementById('cart-modal').style.display = 'flex';
+    }
+
+    function closeCartModal() {
+        document.getElementById('cart-modal').style.display = 'none';
+    }
+
+    function removeFromCart(index) {
+        // Zmniejszamy ilość danego produktu o 1
+        if (cart[index].quantity > 1) {
+            cart[index].quantity -= 1;
+        } else {
+            // Jeśli ilość spada do 0, usuwamy produkt z koszyka
+            cart.splice(index, 1);
         }
+        updateCart();
+    }
+
+    function resetCart() {
+        cart = []; // Resetuje koszyk do pustego
+        updateCart(); 
+        closeCartModal(); 
+    }
+
+    function filterProducts() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const categorySelect = document.getElementById('categorySelect').value;
+
+        const products = document.querySelectorAll('.product');
+
+        products.forEach(product => {
+            const productName = product.querySelector('h3').textContent.toLowerCase();
+            const productCategory = product.dataset.category;
+
+            const matchesSearch = productName.includes(searchInput);
+            const matchesCategory = categorySelect === '' || productCategory === categorySelect;
+
+            if (matchesSearch && matchesCategory) {
+                product.style.display = 'block';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+    }
+
+    function toggleNavbar(collapseID){
+        document.getElementById(collapseID).classList.toggle("hidden");
+        document.getElementById(collapseID).classList.toggle("flex");
+    }
     </script>
 </body>
 </html>
