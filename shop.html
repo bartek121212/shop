@@ -274,20 +274,19 @@
             <div class="modal-header">Koszyk</div>
             <div id="cart-items"></div>
             <div id="total-price" class="modal-footer"></div>
-         <!--    <button class="buy-button" onclick="resetCart()">Resetuj koszyk</button> -->
             <button class="buy-button" onclick="pay()">Zapłać</button>
         </div>
     </div>
 
    
     <script>
-        let cart = []; // Koszyk przechowujący produkty
-    let currentProduct = { name: '', price: 0, quantity: 1 }; // Obiekt przechowujący aktualnie wybrany produkt wraz z ilością
+        let cart = []; 
+    let currentProduct = { name: '', price: 0, quantity: 1 }; 
     
     function showModal(productName, productPrice) {
         currentProduct.name = productName;
         currentProduct.price = productPrice;
-        currentProduct.quantity = 1; // Ustawiamy ilość na 1
+        currentProduct.quantity = 1; 
         document.getElementById('modalTitle').textContent = productName;
         document.getElementById('modalPrice').textContent = `Cena: ${productPrice} PLN`;
         document.getElementById('modal').style.display = 'flex';
@@ -298,14 +297,14 @@
     }
 
     function addToCart() {
-        // Sprawdź, czy produkt już istnieje w koszyku
+
         const existingProduct = cart.find(item => item.name === currentProduct.name);
         if (existingProduct) {
-            // Jeśli produkt istnieje, zwiększ jego ilość
+        
             existingProduct.quantity += currentProduct.quantity;
         } else {
-            // Jeśli produkt nie istnieje, dodaj nowy obiekt do koszyka
-            cart.push({ ...currentProduct }); // Kopiujemy aktualny produkt do koszyka
+           
+            cart.push({ ...currentProduct });
         }
         closeModal();
     }
@@ -315,16 +314,15 @@
         cartItemsContainer.innerHTML = ''; 
         let totalPrice = 0;
 
-        // Iterujemy przez wszystkie produkty w koszyku
         cart.forEach((item, index) => {
             const itemElement = document.createElement('div');
             itemElement.innerHTML = `
                 ${item.name} - ${item.price} PLN (x${item.quantity})
                 <button onclick="removeFromCart(${index})" class="remove-button">Usuń</button>
             `;
-            itemElement.classList.add('cart-item'); // Dodaj klasę dla stylizacji elementów koszyka
+            itemElement.classList.add('cart-item');
             cartItemsContainer.appendChild(itemElement);
-            totalPrice += item.price * item.quantity; // Sumujemy cenę wszystkich produktów
+            totalPrice += item.price * item.quantity; 
         });
 
         document.getElementById('total-price').textContent = `Łączna cena: ${totalPrice} PLN`;
@@ -340,18 +338,18 @@
     }
 
     function removeFromCart(index) {
-        // Zmniejszamy ilość danego produktu o 1
+
         if (cart[index].quantity > 1) {
             cart[index].quantity -= 1;
         } else {
-            // Jeśli ilość spada do 0, usuwamy produkt z koszyka
+           
             cart.splice(index, 1);
         }
         updateCart();
     }
 
     function resetCart() {
-        cart = []; // Resetuje koszyk do pustego
+        cart = []; 
         updateCart(); 
         closeCartModal(); 
     }
@@ -376,6 +374,20 @@
             }
         });
     }
+    function pay() {
+            if (cart.length === 0) {
+                alert('Koszyk jest pusty! Dodaj produkty przed dokonaniem płatności.');
+                return;
+            }
+            
+  
+            alert('Dziękujemy za zakupy! Twoja płatność została pomyślnie zrealizowana.');
+
+    
+            cart = [];
+            updateCart();
+            closeCartModal();
+        }
 
     function toggleNavbar(collapseID){
         document.getElementById(collapseID).classList.toggle("hidden");
