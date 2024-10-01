@@ -88,6 +88,14 @@
             padding: 10px;
             border-radius: 8px;
         }
+        .modal-body{
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .modal-footer{
+            font-weight: bold;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
@@ -254,83 +262,84 @@
     </div>
 
    
-<script>
-    let cart = []; 
-    let currentProduct = { name: '', price: 0 }; 
-
-    function showModal(productName, productPrice) {
-        currentProduct.name = productName;
-        currentProduct.price = productPrice;
-        document.getElementById('modalTitle').textContent = productName;
-        document.getElementById('modalPrice').textContent = `Cena: ${productPrice} PLN`;
-        document.getElementById('modal').style.display = 'flex';
-    }
-
-    function closeModal() {
-        document.getElementById('modal').style.display = 'none';
-    }
-
-    function addToCart() {
-        cart.push(currentProduct); 
- /*        alert('Produkt dodany do koszyka!'); */
-        closeModal();
-    }
-
-    function updateCart() {
-        const cartItemsContainer = document.getElementById('cart-items');
-        cartItemsContainer.innerHTML = ''; 
-        let totalPrice = 0;
-
-        cart.forEach((item, index) => {
-            const itemElement = document.createElement('div');
-            itemElement.textContent = `${item.name} - ${item.price} PLN`;
-            cartItemsContainer.appendChild(itemElement);
-            totalPrice += item.price;
-        });
-
-        document.getElementById('total-price').textContent = `Łączna cena: ${totalPrice} PLN`;
-    }
-
-    function showCartModal() {
-        updateCart();
-        document.getElementById('cart-modal').style.display = 'flex';
-    }
-
-    function closeCartModal() {
-        document.getElementById('cart-modal').style.display = 'none';
-    }
-
-    function resetCart() {
-        cart = []; 
-        updateCart(); 
-/*         alert('Koszyk został zresetowany.'); */
-        closeCartModal(); 
-    }
-
-    function filterProducts() {
-        const searchInput = document.getElementById('searchInput').value.toLowerCase();
-        const categorySelect = document.getElementById('categorySelect').value;
-
-        const products = document.querySelectorAll('.product');
-
-        products.forEach(product => {
-            const productName = product.querySelector('h3').textContent.toLowerCase();
-            const productCategory = product.dataset.category;
-
-            const matchesSearch = productName.includes(searchInput);
-            const matchesCategory = categorySelect === '' || productCategory === categorySelect;
-
-            if (matchesSearch && matchesCategory) {
-                product.style.display = 'block';
-            } else {
-                product.style.display = 'none';
-            }
-        });
-    }
-    function toggleNavbar(collapseID){
-          document.getElementById(collapseID).classList.toggle("hidden");
-          document.getElementById(collapseID).classList.toggle("flex");
+    <script>
+        let cart = []; 
+        let currentProduct = { name: '', price: 0 }; 
+    
+        function showModal(productName, productPrice) {
+            currentProduct.name = productName;
+            currentProduct.price = productPrice;
+            document.getElementById('modalTitle').textContent = productName;
+            document.getElementById('modalPrice').textContent = `Cena: ${productPrice} PLN`;
+            document.getElementById('modal').style.display = 'flex';
         }
-</script>
+    
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+    
+        function addToCart() {
+            // Create a new object for the current product
+            const newProduct = { name: currentProduct.name, price: currentProduct.price };
+            cart.push(newProduct); 
+            closeModal();
+        }
+    
+        function updateCart() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            cartItemsContainer.innerHTML = ''; 
+            let totalPrice = 0;
+    
+            cart.forEach((item) => {
+                const itemElement = document.createElement('div');
+                itemElement.textContent = `${item.name} - ${item.price} PLN`;
+                cartItemsContainer.appendChild(itemElement);
+                totalPrice += item.price;
+            });
+    
+            document.getElementById('total-price').textContent = `Łączna cena: ${totalPrice} PLN`;
+        }
+    
+        function showCartModal() {
+            updateCart();
+            document.getElementById('cart-modal').style.display = 'flex';
+        }
+    
+        function closeCartModal() {
+            document.getElementById('cart-modal').style.display = 'none';
+        }
+    
+        function resetCart() {
+            cart = []; 
+            updateCart(); 
+            closeCartModal(); 
+        }
+    
+        function filterProducts() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const categorySelect = document.getElementById('categorySelect').value;
+    
+            const products = document.querySelectorAll('.product');
+    
+            products.forEach(product => {
+                const productName = product.querySelector('h3').textContent.toLowerCase();
+                const productCategory = product.dataset.category;
+    
+                const matchesSearch = productName.includes(searchInput);
+                const matchesCategory = categorySelect === '' || productCategory === categorySelect;
+    
+                if (matchesSearch && matchesCategory) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+        }
+    
+        function toggleNavbar(collapseID){
+            document.getElementById(collapseID).classList.toggle("hidden");
+            document.getElementById(collapseID).classList.toggle("flex");
+        }
+    </script>
 </body>
 </html>
