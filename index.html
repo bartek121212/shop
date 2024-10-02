@@ -9,6 +9,36 @@
     <link rel="stylesheet" href="style.css">
     <style>
 
+.modal-content {
+    position: relative; 
+    padding: 20px;
+    max-height: 90vh;
+    overflow-y: auto; 
+}
+
+
+#closeModal {
+    position: absolute; 
+    top: 10px;
+    right: 15px;
+    font-size: 24px; 
+    color: #4a5568; 
+    cursor: pointer; 
+    z-index: 10; 
+}
+
+
+.modal {
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    visibility: hidden; 
+}
+
+.modal:not(.hidden) {
+    opacity: 1; 
+    visibility: visible; 
+}
+
     </style>
 </head>
 <body class="">
@@ -91,7 +121,7 @@
                 </div>
             </div>
             <div class="flex justify-center items-center flex-wrap py-12 gap-10 px-5 max-sm:px-0 max-md:px-0 max-lg:px-0 bg-gray-100">
-                <!-- Updated Product Cards with Data Attributes -->
+      
                 <div class="flex justify-center items-center flex-wrap">
                     <div class="product product-card" data-product-name="Produkt 1" data-product-desc="Opis Produktu 1" data-product-img="img/logo.png">
                         <img src="img/logo.png" alt="Produkt">
@@ -104,7 +134,7 @@
              
             </div>
             <div class="flex justify-center items-center flex-wrap py-12 gap-10 px-5 max-sm:px-0 max-md:px-0 max-lg:px-0 bg-gray-100">
-                <!-- Updated Product Cards with Data Attributes -->
+  
                 <div class="flex  justify-center items-center flex-wrap">
                     <div class="product product-card" data-product-name="Produkt 1" data-product-desc="Opis Produktu 1" data-product-img="img/logo.png">
                         <img src="img/logo.png" alt="Produkt">
@@ -117,7 +147,7 @@
              
             </div>
             <div class="flex justify-center items-center flex-wrap py-12 gap-10 px-5 max-sm:px-0 max-md:px-0 max-lg:px-0 bg-gray-100">
-                <!-- Updated Product Cards with Data Attributes -->
+       
                 <div class="flex  justify-center items-center flex-wrap">
                     <div class="product product-card" data-product-name="Produkt 1" data-product-desc="Opis Produktu 1" data-product-img="img/logo.png">
                         <img src="img/logo.png" alt="Produkt">
@@ -130,7 +160,7 @@
              
             </div>
             <div class="flex justify-center items-center flex-wrap py-12 gap-10 px-5 max-sm:px-0 max-md:px-0 max-lg:px-0 bg-gray-100">
-                <!-- Updated Product Cards with Data Attributes -->
+
                 <div class="flex  justify-center items-center flex-wrap">
                     <div class="product product-card" data-product-name="Produkt 1" data-product-desc="Opis Produktu 1" data-product-img="img/logo.png">
                         <img src="img/logo.png" alt="Produkt">
@@ -143,7 +173,7 @@
              
             </div>
             <div class="flex justify-center items-center flex-wrap py-12 gap-10 px-5 max-sm:px-0 max-md:px-0 max-lg:px-0 bg-gray-100">
-                <!-- Updated Product Cards with Data Attributes -->
+         
                 <div class="flex justify-center items-center flex-wrap">
                     <div class="product product-card" data-product-name="Produkt 1" data-product-desc="Opis Produktu 1" data-product-img="img/logo.png">
                         <img src="img/logo.png" alt="Produkt">
@@ -168,9 +198,8 @@
         </div>
     </section>
 
-
     <div id="productModal" class="modal hidden fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-white rounded-lg p-10 max-w-4xl w-full relative">
+        <div class="bg-white rounded-lg p-10 max-w-4xl w-full relative modal-content">
             <button id="closeModal" class="absolute top-5 right-5 text-xl font-bold text-gray-700">&times;</button>
             <div class="flex flex-col md:flex-row gap-5">
                 <div class="modal-image">
@@ -187,6 +216,7 @@
             </div>
         </div>
     </div>
+    
 
 
     <script>
@@ -221,16 +251,18 @@
         });
 
 
-        closeModalButton.addEventListener('click', () => {
-            modal.classList.add('hidden');
-        });
+    
+closeModalButton.addEventListener('click', () => {
+    modal.classList.add('hidden');
+});
 
-  
-        window.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                modal.classList.add('hidden');
-            }
-        });
+
+window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        modal.classList.add('hidden');
+    }
+});
+
     </script>
 </body>
 </html>
