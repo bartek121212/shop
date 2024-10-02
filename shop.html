@@ -49,6 +49,20 @@
         .buy-button:hover {
             background-color: darkgreen;
         }
+        .clear-button{
+            display: block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .clear-button:hover {
+            background-color: darkred;
+        }
         .price {
             font-weight: bold;
             margin: 5px 0;
@@ -330,15 +344,30 @@
         </div>
     </main>
 
+    <div id="modal" class="modal hidden fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-75 flex items-center justify-center">
+        <div class="modal-content bg-white p-10 rounded-lg shadow-xl max-w-xl w-full relative">
+         
+            <span class="close absolute top-3 right-5 text-2xl font-bold cursor-pointer" onclick="closeModal()">&times;</span>
+    
 
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2 class="modal-header" id="modalTitle">Nazwa produktu</h2>
-            <p class="modal-body" id="modalPrice">Cena: 0 PLN</p>
-            <button class="buy-button" onclick="addToCart()">Dodaj do koszyka</button>
+            <h2 class="modal-header text-2xl font-bold mb-4" id="modalTitle">Nazwa produktu</h2>
+    
+            <!-- Product Image -->
+<!--             <div class="modal-image mb-4">
+                <img id="modalImage" src="" alt="Product Image" class="w-full h-auto rounded-md" />
+            </div> -->
+    
+
+            <p class="modal-body text-xl mb-4" id="modalPrice">Cena: 0 PLN</p>
+    
+
+            <p class="modal-body text-lg mb-4" id="modalDescription">Opis produktu...</p>
+    
+
+            <button class="buy-button bg-blue-500 text-white font-bold py-2 px-5 rounded hover:bg-blue-600 transition duration-300" onclick="addToCart()">Dodaj do koszyka</button>
         </div>
     </div>
+    
     
     <div id="cart-modal" class="modal">
         <div class="modal-content">
@@ -347,119 +376,154 @@
             <div id="cart-items"></div>
             <div id="total-price" class="modal-footer"></div>
             <button class="buy-button" onclick="pay()">Zapłać</button>
+            <button class="clear-button" onclick="clearCart()">Wyczyść koszyk</button>
         </div>
     </div>
+    
 
    
     <script>
-        let cart = []; 
-    let currentProduct = { name: '', price: 0, quantity: 1 }; 
+     let cart = [];
+let currentProduct = { name: '', price: 0, quantity: 1, image: '', description: '' };
+
+
+function showModal(productName, productPrice, productImage = '', productDescription = '') {
+
+    currentProduct.name = productName;
+    currentProduct.price = productPrice;
+    currentProduct.quantity = 1;
+
+    currentProduct.description = productDescription;  
+
+ 
+    document.getElementById('modalTitle').textContent = productName;
+    document.getElementById('modalPrice').textContent = `Cena: ${productPrice} PLN`;
+
+    document.getElementById('modalDescription').textContent = productDescription; 
+
+ 
+    document.getElementById('modal').style.display = 'flex';
+}
+
+
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+}
+
+
+function addToCart() {
+    const existingProduct = cart.find(item => item.name === currentProduct.name);
+    if (existingProduct) {
+        existingProduct.quantity += currentProduct.quantity;
+    } else {
+        cart.push({ ...currentProduct });
+    }
+    closeModal();
+}
+
+function updateCartDisplay() {
+    const cartItemsDiv = document.getElementById('cart-items');
+    const totalPriceDiv = document.getElementById('total-price');
+
+    cartItemsDiv.innerHTML = '';
     
-    function showModal(productName, productPrice) {
-        currentProduct.name = productName;
-        currentProduct.price = productPrice;
-        currentProduct.quantity = 1; 
-        document.getElementById('modalTitle').textContent = productName;
-        document.getElementById('modalPrice').textContent = `Cena: ${productPrice} PLN`;
-        document.getElementById('modal').style.display = 'flex';
+ 
+    cart.forEach((item, index) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.textContent = `${item.name} - Cena: ${item.price} PLN`;
+        cartItemsDiv.appendChild(itemDiv);
+    });
+
+ 
+    const totalPrice = cart.reduce((total, item) => total + item.price, 0);
+    totalPriceDiv.textContent = `Łączna cena: ${totalPrice} PLN`;
+}
+function updateCart() {
+    const cartItemsContainer = document.getElementById('cart-items');
+    cartItemsContainer.innerHTML = '';
+    let totalPrice = 0;
+
+    cart.forEach((item, index) => {
+        const itemElement = document.createElement('div');
+        itemElement.innerHTML = `
+            ${item.name} - ${item.price} PLN (x${item.quantity})
+            <button onclick="removeFromCart(${index})" class="remove-button">Usuń</button>
+        `;
+        itemElement.classList.add('cart-item');
+        cartItemsContainer.appendChild(itemElement);
+        totalPrice += item.price * item.quantity;
+    });
+
+    document.getElementById('total-price').textContent = `Łączna cena: ${totalPrice} PLN`;
+}
+
+
+function showCartModal() {
+    updateCart();
+    document.getElementById('cart-modal').style.display = 'flex';
+}
+
+
+function closeCartModal() {
+    document.getElementById('cart-modal').style.display = 'none';
+}
+
+
+function removeFromCart(index) {
+    if (cart[index].quantity > 1) {
+        cart[index].quantity -= 1;
+    } else {
+        cart.splice(index, 1);
     }
+    updateCart();
+}
 
-    function closeModal() {
-        document.getElementById('modal').style.display = 'none';
-    }
+function clearCart() {
+    cart = []; 
+    updateCartDisplay();
+    alert("Koszyk został wyczyszczony."); 
+}
 
-    function addToCart() {
+function resetCart() {
+    cart = [];
+    updateCart();
+    closeCartModal();
+}
 
-        const existingProduct = cart.find(item => item.name === currentProduct.name);
-        if (existingProduct) {
-        
-            existingProduct.quantity += currentProduct.quantity;
+
+function filterProducts() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const categorySelect = document.getElementById('categorySelect').value;
+
+    const products = document.querySelectorAll('.product');
+
+    products.forEach(product => {
+        const productName = product.querySelector('h3').textContent.toLowerCase();
+        const productCategory = product.dataset.category;
+
+        const matchesSearch = productName.includes(searchInput);
+        const matchesCategory = categorySelect === '' || productCategory === categorySelect;
+
+        if (matchesSearch && matchesCategory) {
+            product.style.display = 'block';
         } else {
-           
-            cart.push({ ...currentProduct });
+            product.style.display = 'none';
         }
-        closeModal();
+    });
+}
+
+
+function pay() {
+    if (cart.length === 0) {
+        alert('Koszyk jest pusty! Dodaj produkty przed dokonaniem płatności.');
+        return;
     }
+    alert('Dziękujemy za zakupy! Twoja płatność została pomyślnie zrealizowana.');
+    cart = [];
+    updateCart();
+    closeCartModal();
+}
 
-    function updateCart() {
-        const cartItemsContainer = document.getElementById('cart-items');
-        cartItemsContainer.innerHTML = ''; 
-        let totalPrice = 0;
-
-        cart.forEach((item, index) => {
-            const itemElement = document.createElement('div');
-            itemElement.innerHTML = `
-                ${item.name} - ${item.price} PLN (x${item.quantity})
-                <button onclick="removeFromCart(${index})" class="remove-button">Usuń</button>
-            `;
-            itemElement.classList.add('cart-item');
-            cartItemsContainer.appendChild(itemElement);
-            totalPrice += item.price * item.quantity; 
-        });
-
-        document.getElementById('total-price').textContent = `Łączna cena: ${totalPrice} PLN`;
-    }
-
-    function showCartModal() {
-        updateCart();
-        document.getElementById('cart-modal').style.display = 'flex';
-    }
-
-    function closeCartModal() {
-        document.getElementById('cart-modal').style.display = 'none';
-    }
-
-    function removeFromCart(index) {
-
-        if (cart[index].quantity > 1) {
-            cart[index].quantity -= 1;
-        } else {
-           
-            cart.splice(index, 1);
-        }
-        updateCart();
-    }
-
-    function resetCart() {
-        cart = []; 
-        updateCart(); 
-        closeCartModal(); 
-    }
-
-    function filterProducts() {
-        const searchInput = document.getElementById('searchInput').value.toLowerCase();
-        const categorySelect = document.getElementById('categorySelect').value;
-
-        const products = document.querySelectorAll('.product');
-
-        products.forEach(product => {
-            const productName = product.querySelector('h3').textContent.toLowerCase();
-            const productCategory = product.dataset.category;
-
-            const matchesSearch = productName.includes(searchInput);
-            const matchesCategory = categorySelect === '' || productCategory === categorySelect;
-
-            if (matchesSearch && matchesCategory) {
-                product.style.display = 'block';
-            } else {
-                product.style.display = 'none';
-            }
-        });
-    }
-    function pay() {
-            if (cart.length === 0) {
-                alert('Koszyk jest pusty! Dodaj produkty przed dokonaniem płatności.');
-                return;
-            }
-            
-  
-            alert('Dziękujemy za zakupy! Twoja płatność została pomyślnie zrealizowana.');
-
-    
-            cart = [];
-            updateCart();
-            closeCartModal();
-        }
 
     function toggleNavbar(collapseID){
         document.getElementById(collapseID).classList.toggle("hidden");
